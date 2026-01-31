@@ -31,6 +31,8 @@
 			ws.addEventListener("open", () => { ready = true; });
 			ws.addEventListener("error", () => { ready = false; location.reload(); });
 
+			setInterval(() => { if (ready) ws.send("."); }, 1000);
+
 			document.getElementsByTagName("button")[0].addEventListener("mousedown", () => {
 				if (!handle) handle = setInterval(() => { if (ready) ws.send("20ms"); }, 15);
 			});
