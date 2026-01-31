@@ -1,0 +1,11 @@
+[package]
+name = "ring-remote"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+axum = { version = "0.8.8", features = ["macros", "ws"] }
+clap = { version = "4.5.56", features = ["derive", "env"] }
+humantime = "2.3.0"
+humantime-serde = "1.1.1"
+tokio = { version = "1.49.0", features = ["macros", "net", "rt-multi-thread", "sync", "time"] }

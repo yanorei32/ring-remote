@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Ring Controller</title>
+		<style>
+			html, body {
+				margin: 0;
+				padding: 0;
+				border: 0;
+			}
+			button {
+				width: 100vw;
+				height: 100vh;
+				font-size: min(50vh, 100vw / 4);
+				margin: 0;
+				padding: 0;
+				border: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<button>Ring!</button>
+		<script>
+			let handle = 0;
+			let ready = false;
+
+			const ws_uri = `ws${location.protocol == "https:" ? "s" : ""}://${location.host}/api/ws`;
+
+			const ws = new WebSocket(ws_uri);
+			ws.addEventListener("open", () => { ready = true; });
+			ws.addEventListener("error", () => { ready = false; location.reload(); });
+
+			document.getElementsByTagName("button")[0].addEventListener("mousedown", () => {
+				if (!handle) handle = setInterval(() => { if (ready) ws.send("20ms"); }, 15);
+			});
+
+			document.getElementsByTagName("button")[0].addEventListener("mouseup", () => {
+				clearInterval(handle);
+				handle = 0;
+			});
+
+			document.getElementsByTagName("button")[0].addEventListener("touchstart", e => {
+				if (!handle) handle = setInterval(() => { if (ready) ws.send("20ms"); }, 15);
+				e.preventDefault();
+			});
+
+			document.getElementsByTagName("button")[0].addEventListener("touchend", e => {
+				if (!e.touches.length) {
+					clearInterval(handle);
+					handle = 0;
+				}
+			});
+		</script>
+	</body>
+</html>

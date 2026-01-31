@@ -1,0 +1,30 @@
+FROM rust:1.93.0-bookworm AS build-env
+LABEL maintainer="yanorei32"
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+WORKDIR /usr/src
+COPY . /usr/src/ring-remote/
+WORKDIR /usr/src/ring-remote
+RUN cargo build --release && cargo install cargo-license && cargo license \
+	--authors \
+	--do-not-bundle \
+	--avoid-dev-deps \
+	--avoid-build-deps \
+	--filter-platform "$(rustc -vV | sed -n 's|host: ||p')" \
+	> CREDITS
+
+FROM debian:bookworm-slim@sha256:56ff6d36d4eb3db13a741b342ec466f121480b5edded42e4b7ee850ce7a418ee
+
+WORKDIR /
+
+COPY --chown=root:root --from=build-env \
+	/usr/src/ring-remote/CREDITS \
+	/usr/src/ring-remote/LICENSE \
+	/usr/share/licenses/ring-remote/
+
+COPY --chown=root:root --from=build-env \
+	/usr/src/ring-remote/target/release/ring-remote \
+	/usr/bin/ring-remote
+
+CMD ["/usr/bin/ring-remote"]
