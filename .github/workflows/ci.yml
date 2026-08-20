@@ -5,9 +5,8 @@ on:
     paths:
       - 'Dockerfile'
       - 'src/**'
-      - '**/src/**'
+      - 'rust-toolchain'
       - 'Cargo.toml'
-      - '**/Cargo.toml'
       - 'Cargo.lock'
       - '.github/workflows/ci.yml'
   push:
